@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hello World</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #0a0a0a;
+  color: #e0e0e0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+h1 {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  color: #555;
+  margin-bottom: 40px;
+}
+
+.greeting {
+  font-size: clamp(48px, 10vw, 120px);
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1;
+  margin-bottom: 8px;
+  transition: opacity 0.3s ease;
+  min-height: 1.2em;
+}
+
+.language-name {
+  font-size: 18px;
+  color: #888;
+  text-align: center;
+  margin-bottom: 60px;
+  font-style: italic;
+}
+
+.fun-fact {
+  max-width: 500px;
+  text-align: center;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #999;
+  margin-bottom: 60px;
+  min-height: 3em;
+  transition: opacity 0.3s ease;
+}
+
+.picker {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+  max-width: 700px;
+}
+
+.picker button {
+  background: #161616;
+  border: 1px solid #222;
+  color: #777;
+  padding: 8px 16px;
+  border-radius: 100px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.picker button:hover {
+  background: #1a1a1a;
+  border-color: #444;
+  color: #ccc;
+}
+
+.picker button.active {
+  background: #fff;
+  color: #000;
+  border-color: #fff;
+}
+
+.speaker {
+  font-size: 24px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  margin-left: 12px;
+  vertical-align: middle;
+  opacity: 0.4;
+  transition: opacity 0.2s;
+}
+.speaker:hover { opacity: 1; }
+
+footer {
+  margin-top: auto;
+  padding-top: 40px;
+  font-size: 12px;
+  color: #333;
+}
+</style>
+</head>
+<body>
+
+<h1>Hello, World</h1>
+<div class="greeting" id="greeting"></div>
+<div class="language-name" id="langName"></div>
+<div class="fun-fact" id="funFact"></div>
+<div class="picker" id="picker"></div>
+<footer>pick a language</footer>
+
+<script>
+const langs = [
+  {
+    code: "en", name: "English", greeting: "Hello, World!",
+    fact: "English has more words than almost any other language, around 170,000 in current use. It's the official language of 67 countries."
+  },
+  {
+    code: "es", name: "Spanish", greeting: "Hola, Mundo!",
+    fact: "Spanish has two words for 'to be' (ser and estar) that torture every learner. Mexico has the most Spanish speakers of any country, not Spain."
+  },
+  {
+    code: "fr", name: "French", greeting: "Bonjour, le Monde!",
+    fact: "French was the official language of England for over 300 years after the Norman conquest. The word 'restaurant' comes from French."
+  },
+  {
+    code: "de", name: "German", greeting: "Hallo, Welt!",
+    fact: "German lets you smash words together endlessly. Donaudampfschifffahrtselektrizitätenhauptbetriebswerkbauunterbeamtengesellschaft is a real word (99 letters)."
+  },
+  {
+    code: "ja", name: "Japanese", greeting: "こんにちは世界!",
+    fact: "Japanese uses three different writing systems in the same sentence: hiragana, katakana, and kanji. There are also different levels of politeness baked into the grammar."
+  },
+  {
+    code: "ko", name: "Korean", greeting: "안녕하세요 세계!",
+    fact: "The Korean alphabet (Hangul) was invented in 1443 by King Sejong the Great specifically so common people could read. It's considered one of the most logical writing systems ever designed."
+  },
+  {
+    code: "zh", name: "Mandarin Chinese", greeting: "你好，世界!",
+    fact: "Mandarin has four tones, and the same syllable 'ma' can mean mother, hemp, horse, or scold depending on how you say it."
+  },
+  {
+    code: "ar", name: "Arabic", greeting: "!مرحبا بالعالم",
+    fact: "Arabic reads right to left. It has at least 11 words for love, each describing a different stage, from attraction to obsession to heartbreak."
+  },
+  {
+    code: "hi", name: "Hindi", greeting: "नमस्ते दुनिया!",
+    fact: "Hindi and Urdu are almost the same spoken language but use completely different scripts. 'Namaste' literally means 'I bow to the divine in you.'"
+  },
+  {
+    code: "pt", name: "Portuguese", greeting: "Olá, Mundo!",
+    fact: "Portuguese has a tense (the personal infinitive) that exists in almost no other language. Brazil has 20x more Portuguese speakers than Portugal."
+  },
+  {
+    code: "ru", name: "Russian", greeting: "Привет, мир!",
+    fact: "Russian doesn't use articles (a, the) at all. The word 'mir' in the greeting means both 'world' and 'peace,' which is why the space station was named Mir."
+  },
+  {
+    code: "sw", name: "Swahili", greeting: "Salamu, Dunia!",
+    fact: "Swahili is a Bantu language with heavy Arabic influence. It's spoken across East Africa and is one of the few African languages that's also an official language of the African Union."
+  },
+  {
+    code: "it", name: "Italian", greeting: "Ciao, Mondo!",
+    fact: "Italian was basically invented by one guy. Dante's 'Divine Comedy' (1320) standardized what became modern Italian from the Tuscan dialect."
+  },
+  {
+    code: "nl", name: "Dutch", greeting: "Hallo, Wereld!",
+    fact: "Dutch is the parent of Afrikaans. The two are mutually intelligible enough that speakers can usually understand each other without trying too hard."
+  },
+  {
+    code: "tr", name: "Turkish", greeting: "Merhaba, Dünya!",
+    fact: "Turkish switched from Arabic script to Latin alphabet overnight in 1928 under Atatürk. The entire country had to relearn how to read."
+  },
+  {
+    code: "pl", name: "Polish", greeting: "Witaj, Świecie!",
+    fact: "Polish has seven grammatical cases and a sound (szcz) that makes non-speakers' brains short-circuit. The city Szczecin is a classic pronunciation test."
+  },
+  {
+    code: "el", name: "Greek", greeting: "Γεια σου, Κόσμε!",
+    fact: "Greek has been written for over 3,400 years, the longest documented history of any living language. Most English scientific terms come from Greek."
+  },
+  {
+    code: "he", name: "Hebrew", greeting: "!שלום, עולם",
+    fact: "Hebrew was essentially a dead language for 1,700 years, used only in religious texts. It was revived as a spoken language in the late 1800s, the only successful full revival of a dead language."
+  },
+  {
+    code: "th", name: "Thai", greeting: "สวัสดีชาวโลก!",
+    fact: "Thai has no spaces between words. You just have to know where one word ends and the next begins. It also has five tones and 44 consonants."
+  },
+  {
+    code: "vi", name: "Vietnamese", greeting: "Xin chào, Thế giới!",
+    fact: "Vietnamese uses Latin script (thanks to a 17th-century Portuguese missionary) but with six tones. The same word 'ma' can mean ghost, mother, but, horse, rice seedling, or tomb."
+  },
+  {
+    code: "is", name: "Icelandic", greeting: "Halló, heimur!",
+    fact: "Icelandic has barely changed in 1,000 years. Modern Icelanders can still read the Viking sagas in the original Old Norse with little trouble."
+  },
+  {
+    code: "fi", name: "Finnish", greeting: "Hei, maailma!",
+    fact: "Finnish has 15 grammatical cases and is not related to any of its Scandinavian neighbors. It's in the same family as Hungarian and Estonian, though they can't understand each other."
+  },
+  {
+    code: "eo", name: "Esperanto", greeting: "Saluton, Mondo!",
+    fact: "Esperanto was invented in 1887 by a Polish eye doctor who wanted a universal second language. It has about 2 million speakers and its own culture, music, and literature."
+  },
+  {
+    code: "ga", name: "Irish", greeting: "Dia duit, a Dhomhan!",
+    fact: "Irish puts the verb first in every sentence. It has no words for 'yes' or 'no,' so you repeat the verb back to answer questions."
+  }
+];
+
+const greetingEl = document.getElementById('greeting');
+const langNameEl = document.getElementById('langName');
+const funFactEl = document.getElementById('funFact');
+const pickerEl = document.getElementById('picker');
+
+let current = 0;
+
+langs.forEach((lang, i) => {
+  const btn = document.createElement('button');
+  btn.textContent = lang.name;
+  btn.addEventListener('click', () => select(i));
+  pickerEl.appendChild(btn);
+});
+
+function select(i) {
+  current = i;
+  const lang = langs[i];
+
+  greetingEl.style.opacity = 0;
+  funFactEl.style.opacity = 0;
+
+  setTimeout(() => {
+    greetingEl.textContent = lang.greeting;
+    langNameEl.textContent = lang.name;
+    funFactEl.textContent = lang.fact;
+    greetingEl.style.opacity = 1;
+    funFactEl.style.opacity = 1;
+  }, 200);
+
+  document.querySelectorAll('.picker button').forEach((btn, j) => {
+    btn.classList.toggle('active', j === i);
+  });
+}
+
+// start with a random one
+select(Math.floor(Math.random() * langs.length));
+</script>
+</body>
+</html>
